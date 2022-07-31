@@ -9,18 +9,6 @@
         </h1>
       </a>
     </div>
-    <ul>
-      {{#each
-        (array
-          (hash title="Black Dog" band="Led Zeppelin" rating=3)
-          (hash title="Yellow Ledbetter" band="Pearl Jam" rating=1)
-          (hash title="The Pretender" band="The Foo Fighters" rating=5)
-        ) as |song|
-      }}
-        <li>
-          {{song.title}} by {{song.band}} ({{song.rating}})
-        </li>
-      {{/each}}
-    </ul>
+    {{outlet}}
   </div>
 </div>

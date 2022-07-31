@@ -1,4 +1,3 @@
-
 import EmberRouter from '@ember/routing/router';
 import config from 'rarwe/config/environment';
 
@@ -8,6 +7,9 @@ export default class Router extends EmberRouter {
 }
 
 Router.map(function () {
-  this.route('bands');
-  this.route('songs');
+  this.route('bands', function () {
+    this.route('band', { path: ':id' }, function () {
+      this.route('songs');
+    });
+  });
 });

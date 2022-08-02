@@ -1,5 +1,6 @@
 import Route from '@ember/routing/route';
 import { tracked } from '@glimmer/tracking';
+import { inject as service } from '@ember/service';
 
 export class Band {
   @tracked songs;
@@ -7,7 +8,7 @@ export class Band {
   constructor({ id, name, songs }) {
     this.id = id;
     this.name = name;
-    this.songs = songs;
+    this.songs = songs || [];
   }
 }
 
@@ -20,28 +21,26 @@ export class Song {
 }
 
 export default class BandsRoute extends Route {
+  @service catalog;
+
   model() {
     let blackDog = new Song({
       title: 'Black Dog',
-      band: 'Led Zeppelin',
       rating: 3,
     });
 
     let yellowLedbetter = new Song({
       title: 'Yellow Ledbetter',
-      band: 'Pearl Jam',
       rating: 2,
     });
 
     let pretender = new Song({
       title: 'The Pretender',
-      band: 'The Foo Fighters',
       rating: 5,
     });
 
     let daughter = new Song({
       title: 'Daughter',
-      band: 'Pearl Jam',
       rating: 2,
     });
 
@@ -63,6 +62,20 @@ export default class BandsRoute extends Route {
       songs: [pretender],
     });
 
-    return [ledZeppelin, pearlJam, fooFighters];
+    this.catalog.add('band', ledZeppelin);
+    this.catalog.add('band', pearlJam);
+    this.catalog.add('band', fooFighters);
+
+    blackDog.band = ledZeppelin;
+    yellowLedbetter.band = pearlJam;
+    daughter.band = pearlJam;
+    pretender.band = fooFighters;
+
+    this.catalog.add('song', blackDog);
+    this.catalog.add('song', yellowLedbetter);
+    this.catalog.add('song', daughter);
+    this.catalog.add('song', pretender);
+
+    return this.catalog.bands;
   }
 }

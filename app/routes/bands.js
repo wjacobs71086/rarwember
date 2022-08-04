@@ -15,7 +15,7 @@ export default class BandsRoute extends Route {
       let { id, attributes, relationships } = item;
       let rels = {};
 
-      for (let relationshipName in relationship) {
+      for (let relationshipName in relationships) {
         rels[relationshipName] = relationships[relationshipName].links.related;
       }
 

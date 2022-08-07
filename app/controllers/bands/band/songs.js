@@ -1,9 +1,7 @@
 import Controller from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import Song from 'rarwe/models/song';
 import { inject as service } from '@ember/service';
-import fetch from 'fetch';
 
 export default class BandsBandSongsController extends Controller {
   @tracked showAddSongs = true;
@@ -14,23 +12,7 @@ export default class BandsBandSongsController extends Controller {
   @action
   async updateRating(song, rating){
     song.rating = rating;
-    let payload = {
-      data: {
-        id: song.id,
-        type: 'songs',
-        attributes: {
-          rating
-        }
-      }  
-    };
-
-    await fetch(`/songs/${song.id}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/vnd.api+json'
-      },
-      body: JSON.stringify(payload)
-    });
+    this.catalog.update('song', song, { rating });
   }
 
   @action
@@ -40,39 +22,12 @@ export default class BandsBandSongsController extends Controller {
 
   @action
   async saveSong() {
-    let payload = {
-      data: {
-        type: 'songs',
-        attributes: { title: this.title },
-        relationships: {
-          band: {
-            data: {
-              id: this.model.id,
-              type: 'bands'
-            }
-          }
-        }
-      }
-    };
-    let response = await fetch('/songs', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/vnd.api+json'
-      },
-      body: JSON.stringify(payload)
-    });
-
-    let json = await response.json();
-    let { id, attributes, relationships } = json.data;
-    let rels = {};
+    let song = await this.catalog.create(
+      'song',
+      { title: this.title},
+      { band: { data: { id: this.model.id, type: 'bands' } } }
+    );
     
-    for (let relationshipName in relationships) {
-      rels[relationshipName] = relationships[relationshipName].links.related;
-    }
-
-    let song = new Song({ id, ...attributes }, rels);
-
-    this.catalog.add('song', song);
     this.model.songs = [...this.model.songs, song];
     this.title = '';
     this.showAddSong = true;

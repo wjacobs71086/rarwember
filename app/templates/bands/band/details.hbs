@@ -1,15 +1,4 @@
-{{page-title "Details"}}
-<nav class="flex mb-8 text-lg">
-  <div class="pb-1">
-    <LinkTo @route="bands.band.details">
-      Details
-    </LinkTo>
-  </div>
+{{page-title @model.name " details | Rock & Roll with Octane" replace=true}}
 
-  <div class="pb-1 ml-4">
-    <LinkTo @route="bands.band.songs">
-      Songs
-    </LinkTo>
-  </div>
-</nav>
-{{outlet}}
+<h2 class="mb-4 text-lg">{{@model.name}}</h2>
+<p>{{@model.description}}</p>
